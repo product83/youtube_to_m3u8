@@ -1,5 +1,6 @@
 
 
+from requests import get
 from bs4 import BeautifulSoup
 import requests
 import random
@@ -32,11 +33,19 @@ if __name__ == "__main__":
 	vid = vid[::3]
 	vid = vid[:-1]
 
+
 	with open ("Play_list.m3u8", "a", encoding="utf-8") as files:
 		files.write(str('#EXTM3U' + '\n'))
 	for i in vid:
+		url = 'https://www.youtube.com/watch?v=' +i
+		print(url)
+		r = get(url).text
+		soup = BeautifulSoup(r, "html.parser")
+		tile = soup.title.string
+		title = tile[:len(tile)-10]
+
 		with open ("Play_list.m3u8", "a", encoding="utf-8") as files:
-			files.write(str('\n' + '#EXTM3U:' + '\n' + 'https://www.youtube.com/watch?v=' +i + '\n'))
+			files.write(str('\n' + '#EXTM3U:' + title + '\n' + 'https://www.youtube.com/watch?v=' +i + '\n'))
 print('Done)')
 	
 
