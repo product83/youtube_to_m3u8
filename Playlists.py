@@ -17,6 +17,7 @@ user_agent_list = [
 user_agent = random.choice(user_agent_list)
 headers = {'User-Agent': user_agent}
 
+
 def scrape_videos(url):
 
 	req = requests.get(url)
@@ -29,23 +30,25 @@ def scrape_videos(url):
 
 if __name__ == "__main__":
 	url = str(input("Paste link: "))
+	name = str(input("Set name: "))
 	vid = scrape_videos(url)
 	vid = vid[::3]
 	vid = vid[:-1]
 
 
-	with open ("Play_list.m3u8", "a", encoding="utf-8") as files:
+	with open (name + ".m3u8", "a", encoding="utf-8") as files:
 		files.write(str('#EXTM3U' + '\n'))
-	for i in vid:
-		url = 'https://www.youtube.com/watch?v=' +i
+
+	for i, id in enumerate(vid, start = 1):
+		url = 'https://www.youtube.com/watch?v=' + id
 		print(url)
 		r = get(url).text
 		soup = BeautifulSoup(r, "html.parser")
 		tile = soup.title.string
 		title = tile[:len(tile)-10]
 
-		with open ("Play_list.m3u8", "a", encoding="utf-8") as files:
-			files.write(str('\n' + '#EXTM3U:' + title + '\n' + 'https://www.youtube.com/watch?v=' +i + '\n'))
+		with open (name + ".m3u8", "a", encoding="utf-8") as files:
+			files.write(str('\n' + '#EXTINF:' + str(i) + ', ' + title + '\n' + 'https://www.youtube.com/watch?v=' + id + '\n'))
 print('Done)')
 	
 
